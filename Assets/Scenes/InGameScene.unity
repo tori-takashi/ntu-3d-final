@@ -792,7 +792,7 @@ GameObject:
   - component: {fileID: 2115991919}
   - component: {fileID: 2115991923}
   m_Layer: 0
-  m_Name: Jumper
+  m_Name: JumpRamp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

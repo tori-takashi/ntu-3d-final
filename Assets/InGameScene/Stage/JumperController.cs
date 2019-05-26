@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class JumperController : MonoBehaviour {
     int clickCounter = 0;
-    bool isJumperCollided = false;
+    bool isCollidedWithJumpRamp = false;
 
     float distance;
 
@@ -27,7 +27,7 @@ public class JumperController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (!isJumperCollided) {
+        if (!isCollidedWithJumpRamp) {
             AccelerateJumper();
         }
     }
@@ -37,8 +37,8 @@ public class JumperController : MonoBehaviour {
             distance = Vector3.Distance(measureStage.transform.position, jumper.transform.position);
         }
 
-        if (collision.gameObject.name == "Jumper") {
-            isJumperCollided = true;
+        if (collision.gameObject.name == "JumpRamp") {
+            isCollidedWithJumpRamp = true;
         }
     }
 
