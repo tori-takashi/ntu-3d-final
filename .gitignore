@@ -34,3 +34,7 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+*.exe
+*.dll
+MonoBleedingEdge/
+ntu-3d-final_Data/
