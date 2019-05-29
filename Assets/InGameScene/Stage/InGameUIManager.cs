@@ -14,6 +14,9 @@ public class InGameUIManager : MonoBehaviour
     public  Text distanceLabel;
     private Text distanceLabelComponent;
 
+    public Text speedLabel;
+    private Text speedLabelComponent;
+
     public  Button restartGameButton;
     private Button restartGameButtonComponent;
     public  Button goToMainMenuButton;
@@ -26,6 +29,7 @@ public class InGameUIManager : MonoBehaviour
         jumperController = jumper.GetComponent<JumperController>();
         
         distanceLabelComponent = distanceLabel.GetComponent<Text>();
+        speedLabelComponent = speedLabel.GetComponent<Text>();
 
         restartGameButtonComponent = restartGameButton.GetComponent<Button>();
         goToMainMenuButtonComponent = goToMainMenuButton.GetComponent<Button>();
@@ -40,6 +44,7 @@ public class InGameUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        speedLabelComponent.text = Mathf.Round(jumperController.getSpeed()).ToString();
         if(jumperController.getDistance() != 0) {
             distanceLabelComponent.text = jumperController.getDistance().ToString() + "m";
 

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class JumperController : MonoBehaviour {
-    int clickCounter = 0;
-    bool isCollidedWithJumpRamp = false;
+    public int clickCounter = 0;
+    public bool isCollidedWithJumpRamp = false;
+    public bool isDistanceMeasured = false;
 
     float distance;
 
@@ -15,6 +16,7 @@ public class JumperController : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
+        Physics.gravity = new Vector3(0,-30f,0);
         rbJumper = GetComponent<Rigidbody>();
 
         clickCounter = 0;
@@ -33,23 +35,32 @@ public class JumperController : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision collision) {
-       if(collision.gameObject.name == "MeasureStage") {
+       if(collision.gameObject.name == "MeasureStage" && !isDistanceMeasured) {
             distance = Vector3.Distance(measureStage.transform.position, jumper.transform.position);
+            isDistanceMeasured = true;
         }
 
-        if (collision.gameObject.name == "JumpRamp") {
+    }
+
+    void OnTriggerEnter(Collider collider) {
+        if(collider.gameObject.name == "JumpRamp") {
             isCollidedWithJumpRamp = true;
         }
+
     }
 
     public float getDistance() {
         return distance;
     }
 
+    public float getSpeed() {
+        return rbJumper.velocity.magnitude;
+    }
+
     void AccelerateJumper() {
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return)) {
             clickCounter++;
-            addedForce.x = (float)clickCounter;
+            addedForce.z = (float)clickCounter;
         }
         rbJumper.AddForce(addedForce, ForceMode.Acceleration);
     }
