@@ -44,7 +44,12 @@ public class InGameUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        speedLabelComponent.text = Mathf.Round(jumperController.getSpeed()).ToString() + "km/h";
+        if (!jumperController.isCollidedWithDistanceBasePoint) {
+            speedLabelComponent.text = Mathf.Round(jumperController.getSpeed()).ToString() + "km/h";
+        } else {
+            speedLabelComponent.text = "";
+        }
+
         if(jumperController.getDistance() != 0) {
             distanceLabelComponent.text = jumperController.getDistance().ToString() + "m";
 
