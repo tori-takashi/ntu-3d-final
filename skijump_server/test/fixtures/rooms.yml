@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: 
+  record: 1.5
+  order: 1
+  rate_changes: 1
+
+two:
+  user: 
+  record: 1.5
+  order: 1
+  rate_changes: 1

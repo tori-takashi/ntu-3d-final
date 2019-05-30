@@ -1,5 +1,21 @@
 # README
 
+## DB
+
+### User
+user_id
+user_name
+password_digest
+current_rating
+
+### Room
+room_id
+player_id
+record
+order
+rate_changes
+
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
