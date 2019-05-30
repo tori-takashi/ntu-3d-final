@@ -36,5 +36,5 @@ sysinfo.txt
 *.unitypackage
 *.exe
 *.dll
-MonoBleedingEdge/
-ntu-3d-final_Data/
+skijump_client/MonoBleedingEdge/
+skijump_client/ntu-3d-final_Data/
