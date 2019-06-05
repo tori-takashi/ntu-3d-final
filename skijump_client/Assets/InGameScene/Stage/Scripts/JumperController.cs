@@ -55,6 +55,10 @@ public class JumperController : MonoBehaviour {
 
             rbJumper.AddForce(jumpModifier);
         }
+
+        if(collider.gameObject.name == "ChangeCameraDegreePoint") {
+            RotateMainCamWithEulerAngle("x", 90);
+        }
     }
 
     float MeasureDistance(){
@@ -79,8 +83,10 @@ public class JumperController : MonoBehaviour {
 
     void RotateMainCamWithEulerAngle(string direction, int degree) {
         //Add Y and Z later
+        //[FIX ME] cannnot rotate
         if (direction == "x") {
             mainCam.transform.eulerAngles = new Vector3(Mathf.LerpAngle(mainCam.transform.eulerAngles.x, degree,Time.deltaTime),0,0);
+            Debug.Log(mainCam.transform.rotation);
         }
 
     }
