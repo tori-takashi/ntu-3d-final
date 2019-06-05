@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class JumperController : MonoBehaviour {
-    int clickCounter = 0;
-    bool isDistanceMeasured = false;
     public bool isCollidedWithDistanceBasePoint = false;
-
+    public bool isMultiMode = false;
+    
+    int clickCounter = 0;
     float distance;
+    bool isDistanceMeasured = false;
 
     GameObject jumper;
     GameObject mainCam;
@@ -19,6 +21,11 @@ public class JumperController : MonoBehaviour {
     Rigidbody rbJumper;
 
     void Start() {
+
+        if (SceneManager.GetActiveScene().name == "MultiMode"){
+            isMultiMode = true;
+        }
+
         clickCounter = 0;
 
         rbJumper = GetComponent<Rigidbody>();

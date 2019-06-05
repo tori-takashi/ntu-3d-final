@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class SingleModeUI : MonoBehaviour
+public class JumperUI : MonoBehaviour
 {
     // Start is called before the first frame update
     GameObject jumper;
@@ -20,7 +20,6 @@ public class SingleModeUI : MonoBehaviour
     private Button restartGameButtonComponent;
     public  Button goToMainMenuButton;
     private Button goToMainMenuButtonComponent;
-
 
     void Start()
     {
@@ -54,7 +53,6 @@ public class SingleModeUI : MonoBehaviour
 
             restartGameButton.gameObject.SetActive(true);
             goToMainMenuButton.gameObject.SetActive(true);
-
         }
     }
 
