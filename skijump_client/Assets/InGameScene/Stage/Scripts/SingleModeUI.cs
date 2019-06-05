@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-
-public class InGameUIManager : MonoBehaviour
+public class SingleModeUI : MonoBehaviour
 {
     // Start is called before the first frame update
     GameObject jumper;
@@ -29,9 +28,9 @@ public class InGameUIManager : MonoBehaviour
         jumperController = jumper.GetComponent<JumperController>();
         
         distanceLabelComponent = distanceLabel.GetComponent<Text>();
-        speedLabelComponent = speedLabel.GetComponent<Text>();
+        speedLabelComponent    = speedLabel.GetComponent<Text>();
 
-        restartGameButtonComponent = restartGameButton.GetComponent<Button>();
+        restartGameButtonComponent  = restartGameButton.GetComponent<Button>();
         goToMainMenuButtonComponent = goToMainMenuButton.GetComponent<Button>();
 
         restartGameButtonComponent.onClick.AddListener(RestartGame);
