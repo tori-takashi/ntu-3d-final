@@ -8,12 +8,13 @@ public class UIManager : MonoBehaviour
 {
     bool isMultiMode = false;
 
-    GameObject jumper;
+    GameObject jumperObject;
     JumperController jumperController;
+    GameObject networkManagerObject;
+    NetworkManager networkManager;
 
     public  Text distanceLabel;
     private Text distanceLabelComponent;
-
     public  Text speedLabel;
     private Text speedLabelComponent;
 
@@ -21,17 +22,27 @@ public class UIManager : MonoBehaviour
     private Button restartGameButtonComponent;
     public  Button goToMainMenuButton;
     private Button goToMainMenuButtonComponent;
+
+    public  Text playerNumberLabel;
+    private Text playerNumberLabelComponent;
+
     public  Button quitButton;
     private Button quitButtonComponent;
 
     void Start() {
-        jumper = GameObject.Find("Jumper");
-        jumperController = jumper.GetComponent<JumperController>();
+        jumperObject = GameObject.Find("Jumper");
+        jumperController = jumperObject.GetComponent<JumperController>();
+
+        networkManagerObject = GameObject.Find("NetworkManager");
+        Debug.Log("aaaaaaaaaaaaaaa");
+        Debug.Log(networkManagerObject);
+        networkManager = networkManagerObject.GetComponent<NetworkManager>();
 
         isMultiMode = jumperController.isMultiMode;
         
         distanceLabelComponent = distanceLabel.GetComponent<Text>();
         speedLabelComponent    = speedLabel.GetComponent<Text>();
+        playerNumberLabelComponent = playerNumberLabel.GetComponent<Text>();
 
         restartGameButtonComponent  = restartGameButton.GetComponent<Button>();
         goToMainMenuButtonComponent = goToMainMenuButton.GetComponent<Button>();
@@ -40,6 +51,8 @@ public class UIManager : MonoBehaviour
         restartGameButtonComponent.onClick.AddListener(RestartGame);
         goToMainMenuButtonComponent.onClick.AddListener(GoToMainMenu);
         quitButtonComponent.onClick.AddListener(GoToMainMenu);
+
+        playerNumberLabelComponent.text = "You are Player No." + networkManager.getJumpOrder().ToString();
 
         restartGameButton.gameObject.SetActive(false);
         goToMainMenuButton.gameObject.SetActive(false);
@@ -64,8 +77,9 @@ public class UIManager : MonoBehaviour
     }
 
     void OnLeftRoom() {
-        SceneManager.LoadScene("MainMenu");
         PhotonNetwork.Disconnect();
+        SceneManager.LoadScene("MainMenu");
+        Destroy(networkManager);
         Debug.Log("Left from the room");
     }
 
@@ -78,7 +92,13 @@ public class UIManager : MonoBehaviour
     }
 
     void RestartGame(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (isMultiMode) {
+            Destroy(networkManager);
+            PhotonNetwork.LeaveRoom();
+            SceneManager.LoadScene("MultiModeWaitingRoom");
+        } else {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
 }

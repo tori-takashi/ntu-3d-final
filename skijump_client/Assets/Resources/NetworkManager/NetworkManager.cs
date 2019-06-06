@@ -4,28 +4,41 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class MultiModeWaiting : MonoBehaviour
+public class NetworkManager : MonoBehaviour
 {
-    public Button cancelButton;
-
     string gameVersion = "1";
 
-    int jumpOrder;
+    public Button cancelButton;
+    public int jumpOrder;
 
     public RoomInfo[] roomList;
 
     void Awake() {
+        DontDestroyOnLoad(this.gameObject);
+        jumpOrder = 1;
+
         PhotonNetwork.automaticallySyncScene = true;
         PhotonNetwork.ConnectUsingSettings(gameVersion);
     }
 
     void Start() {
+
         Button cancelButtonComponent = cancelButton.GetComponent<Button>();
         cancelButtonComponent.onClick.AddListener(Cancel);
     }
 
     void Update() {
         
+    }
+
+    void OnEnable() {
+        SceneManager.sceneLoaded += OnMultiModeSceneLoaded;
+    }
+
+    void OnMultiModeSceneLoaded(Scene scene, LoadSceneMode mode) {
+        if (scene.name == "MultiMode") {
+            Debug.Log("Scene Loaded!!!!");
+        }
     }
 
     void LoadArena() {
@@ -45,6 +58,7 @@ public class MultiModeWaiting : MonoBehaviour
     void OnPhotonRandomJoinFailed() {
         Debug.Log("OnPhotonRandomJoinFailed()");
         RoomOptions roomOptions = new RoomOptions();
+        jumpOrder = 2;
 
         roomOptions.MaxPlayers = 2;
         PhotonNetwork.CreateRoom(null, roomOptions, null);
@@ -70,6 +84,10 @@ public class MultiModeWaiting : MonoBehaviour
 
     void OnFailedToConnectToPhoton() {
         Debug.Log("Connection Failed. Check your network status");
+    }
+
+    public int getJumpOrder() {
+        return jumpOrder;
     }
 
     void Cancel() {
