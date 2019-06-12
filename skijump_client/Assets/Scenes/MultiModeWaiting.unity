@@ -120,6 +120,81 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &283664409
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 283664410}
+  - component: {fileID: 283664411}
+  - component: {fileID: 283664412}
+  m_Layer: 0
+  m_Name: MultiModeGameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &283664410
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283664409}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11.499474, y: 51.047363, z: 277.48236}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &283664411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283664409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89b239163947095498cbca5c6d5ccf91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myJumpOrder: 0
+  currentJumper: 0
+  player1_result: 0
+  player2_result: 0
+--- !u!114 &283664412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 283664409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerId: 0
+  group: 0
+  OwnerShipWasTransfered: 0
+  prefixBackup: -1
+  synchronization: 3
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  ownershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 283664411}
+  ObservedComponentsFoldoutOpen: 1
+  viewIdField: 1
+  instantiationId: 1
+  currentMasterID: -1
+  isRuntimeInstantiated: 0
 --- !u!1 &876673873
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,11 +318,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 980037114}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6adf850825a79940b4fd75c6079d67a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6f73bc6efc509ab419aec8a264ee19da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cancelButton: {fileID: 1580774533}
-  jumpOrder: 0
 --- !u!1 &988999938
 GameObject:
   m_ObjectHideFlags: 0
@@ -638,8 +712,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6adf850825a79940b4fd75c6079d67a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cancelButton: {fileID: 0}
-  jumpOrder: 0
 --- !u!114 &1710020724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,8 +724,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6adf850825a79940b4fd75c6079d67a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cancelButton: {fileID: 0}
-  jumpOrder: 0
 --- !u!1 &2040383967
 GameObject:
   m_ObjectHideFlags: 0
