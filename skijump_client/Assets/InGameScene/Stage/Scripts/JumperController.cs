@@ -8,6 +8,7 @@ public class JumperController : MonoBehaviour, IPunObservable
     public bool isCollidedWithDistanceBasePoint = false;
     public float distance;
     public bool isDistanceMeasured = false;
+    bool isChangedConstraints = false;
     int clickCounter = 0;
     float speed;
 
@@ -71,16 +72,27 @@ public class JumperController : MonoBehaviour, IPunObservable
 
     void Update()
     {
-        if (!isCollidedWithDistanceBasePoint && multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
-                AccelerateJumper();
-        }
+        if(playerController.isCountDownFinished) {
+            if(!isChangedConstraints){
+                rbJumper.constraints = RigidbodyConstraints.None;
+                rbJumper.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
+                isChangedConstraints = true;
+            }
 
-        if(getDistance() != 0) {
-          if (multiModeGameManager.currentJumper == 1) multiModeGameManager.player1_result = distance;
-          if (multiModeGameManager.currentJumper == 2) multiModeGameManager.player2_result = distance;
-        }
+            if (!isCollidedWithDistanceBasePoint && multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
+                    AccelerateJumper();
+            }
 
-        speed = rbJumper.velocity.magnitude;
+            if(getDistance() != 0) {
+              if (multiModeGameManager.currentJumper == 1) multiModeGameManager.player1_result = distance;
+              if (multiModeGameManager.currentJumper == 2) multiModeGameManager.player2_result = distance;
+            }
+
+            speed = rbJumper.velocity.magnitude;
+
+        } else {
+            rbJumper.constraints = RigidbodyConstraints.FreezeAll;
+        }
     }
 
     void OnCollisionEnter(Collision collision) {

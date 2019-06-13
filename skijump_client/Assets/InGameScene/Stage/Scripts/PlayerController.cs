@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
     public bool isMultiMode = false;
+    public bool isCountDownFinished = false;
     
     public bool isInstantiatedTwoPlayers = false;
     public string myRole;
@@ -67,7 +68,6 @@ public class PlayerController : MonoBehaviour {
 
             blower.transform.parent = jumper.transform;
             GameObject.Instantiate(UIManager);
-
 
           } else {
             if( GameObject.FindGameObjectWithTag("Jumper") && GameObject.FindGameObjectWithTag("Blower")) isTwoPlayerExisted = true;

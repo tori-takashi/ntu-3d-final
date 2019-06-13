@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour
 {
     bool isMultiMode = false;
+    float timerCount = 3.0f + 0.99f;
 
     GameObject playerObject;
     PlayerController playerController;
@@ -22,6 +23,8 @@ public class UIManager : MonoBehaviour
     Text matchResultLabelComponent;
     GameObject clickDirectionLabel;
     Text clickDirectionLabelComponent;
+    GameObject countDownLabel;
+    Text countDownLabelComponent;
 
     GameObject restartGameButton;
     Button restartGameButtonComponent;
@@ -35,16 +38,7 @@ public class UIManager : MonoBehaviour
 
     Text playerNumberLabelComponent;
 
-    void Start() {
-
-        playerObject = GameObject.Find("PlayerController");
-        playerController = playerObject.GetComponent<PlayerController>();
-
-        isMultiMode = playerController.isMultiMode;
-
-        jumperObject = GameObject.FindGameObjectWithTag("Jumper");
-        jumperController = jumperObject.GetComponent<JumperController>();
-
+    void Awake() {
         distanceLabel = GameObject.Find("DistanceLabel");
         distanceLabelComponent = distanceLabel.GetComponent<Text>();
         speedLabel = GameObject.Find("SpeedLabel");
@@ -53,6 +47,8 @@ public class UIManager : MonoBehaviour
         matchResultLabelComponent = matchResultLabel.GetComponent<Text>();
         clickDirectionLabel = GameObject.Find("ClickDirectionLabel");
         clickDirectionLabelComponent = clickDirectionLabel.GetComponent<Text>();
+        countDownLabel = GameObject.Find("CountDownLabel");
+        countDownLabelComponent = countDownLabel.GetComponent<Text>();
 
         restartGameButton = GameObject.Find("RestartGameButton");
         restartGameButtonComponent  = restartGameButton.GetComponent<Button>();
@@ -62,10 +58,23 @@ public class UIManager : MonoBehaviour
         restartGameButtonComponent.onClick.AddListener(RestartGame);
         goToMainMenuButtonComponent.onClick.AddListener(GoToMainMenu);
 
-        clickDirectionLabel.gameObject.SetActive(false);
+        restartGameButton.SetActive(false);
+        goToMainMenuButton.SetActive(false);
 
-        restartGameButton.gameObject.SetActive(false);
-        goToMainMenuButton.gameObject.SetActive(false);
+        playerObject = GameObject.Find("PlayerController");
+        playerController = playerObject.GetComponent<PlayerController>();
+        isMultiMode = playerController.isMultiMode;
+
+        if (isMultiMode && playerController.myRole == "Blower"){
+            speedLabel.SetActive(false);
+        }
+
+    }
+
+    void Start() {
+
+        jumperObject = GameObject.FindGameObjectWithTag("Jumper");
+        jumperController = jumperObject.GetComponent<JumperController>();
 
         if(isMultiMode) {
             networkManagerObject = GameObject.Find("NetworkManager");
@@ -76,21 +85,20 @@ public class UIManager : MonoBehaviour
 
             playerNumberLabelComponent = GameObject.Find("PlayerNumberLabel").GetComponent<Text>();
             playerNumberLabelComponent.text = "You are Player" + multiModeGameManager.myJumpOrder.ToString() + " Current Jumper is Player" + multiModeGameManager.currentJumper.ToString();
-
-            if (playerController.myRole == "Blower") {
-                speedLabel.SetActive(false);
-            }
-
         }
     }
 
     void Update()
     {
         JudgeGameAborted();
+
+        CountDown();
+
         JudgeDisplayClickLabel();
         JudgeDisplaySpeedLabel();
 
         if (jumperController.getDistance() != 0 && !multiModeGameManager.gameAborted) {
+            distanceLabel.SetActive(true);
             distanceLabelComponent.text = jumperController.getDistance().ToString() + "m";
         
             if(multiModeGameManager.isDeterminedWinOrLose()) {
@@ -101,6 +109,17 @@ public class UIManager : MonoBehaviour
                 Invoke("PlayerChange", 3f);
             }
         }
+    }
+
+    void CountDown() {
+        timerCount -= Time.deltaTime;
+        int seconds = (int)timerCount;
+        countDownLabelComponent.text = seconds.ToString();
+        if (seconds == 0) {
+            countDownLabelComponent.text = "GO!!!";
+            playerController.isCountDownFinished = true;
+        }
+        if (timerCount < 0.3f) countDownLabel.SetActive(false);
     }
 
     void JudgeGameAborted(){
@@ -128,17 +147,15 @@ public class UIManager : MonoBehaviour
 
     void JudgeDisplayClickLabel() {
        if(!jumperController.isCollidedWithDistanceBasePoint && playerController.myRole == "Jumper" && !jumperController.isDistanceMeasured) {
-           Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            clickDirectionLabel.gameObject.SetActive(true);
-            Debug.Log(clickDirectionLabel.activeSelf);
+            clickDirectionLabelComponent.text = "Click Click Click!!!";
         } else {
-            clickDirectionLabel.gameObject.SetActive(true);
+            clickDirectionLabelComponent.text = "";
         }
 
         if(jumperController.isCollidedWithDistanceBasePoint && playerController.myRole == "Blower" && !jumperController.isDistanceMeasured) {
-            clickDirectionLabel.gameObject.SetActive(true);
+            clickDirectionLabelComponent.text = "Click Click Click!!!";
         } else {
-            clickDirectionLabel.gameObject.SetActive(false);
+            clickDirectionLabelComponent.text = "";
         }
     }
 
