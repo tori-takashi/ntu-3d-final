@@ -11,4 +11,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SingleMode.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/MultiModeWaiting.unity
+    guid: fd97e007075f92a4790ed352ce0fb0a3
+  - enabled: 1
+    path: Assets/Scenes/MultiMode.unity
+    guid: 625988239745b6e418743410514656b3
+  - enabled: 1
+    path: Assets/Scenes/PlayerChange.unity
+    guid: 955052304f695b14e9bd437c07feb42e
   m_configObjects: {}

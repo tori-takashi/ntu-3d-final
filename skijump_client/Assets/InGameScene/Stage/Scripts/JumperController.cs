@@ -2,45 +2,103 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JumperController : MonoBehaviour {
-    int clickCounter = 0;
-    bool isDistanceMeasured = false;
-    public bool isCollidedWithDistanceBasePoint = false;
+public class JumperController : MonoBehaviour, IPunObservable
+{
 
-    float distance;
+    public bool isCollidedWithDistanceBasePoint = false;
+    public float distance;
+    public bool isDistanceMeasured = false;
+    bool isChangedConstraints = false;
+    int clickCounter = 0;
+    float speed;
 
     GameObject jumper;
-    GameObject mainCam;
+
+    public GameObject mainCam;
+    GameObject mainCamObject;
+
     GameObject distanceBasePoint;
+
+    GameObject multiModeGameManagerObject;
+    MultiModeGameManager multiModeGameManager;
+    GameObject playerControllerObject;
+    PlayerController playerController;
 
     Vector3 addedForce;
     Vector3 jumpModifier = new Vector3(0,3000f,0);
-    
-    Rigidbody rbJumper;
 
-    void Start() {
+    PhotonView photonView;
+    
+    public Rigidbody rbJumper;
+
+    void Start()
+    {
         clickCounter = 0;
 
-        rbJumper = GetComponent<Rigidbody>();
-        mainCam = Camera.main.gameObject;
+        jumper = GameObject.FindGameObjectWithTag("Jumper");
 
-        jumper = GameObject.Find("Jumper");
+        rbJumper = GetComponent<Rigidbody>();
+        addedForce = new Vector3((float)clickCounter,0,0);
+
+        multiModeGameManagerObject = GameObject.Find("MultiModeGameManager");
+        multiModeGameManager = multiModeGameManagerObject.GetComponent<MultiModeGameManager>();
+
+        playerControllerObject = GameObject.Find("PlayerController");
+        playerController = playerControllerObject.GetComponent<PlayerController>();
+
+        photonView = this.GetComponent<PhotonView>();
+
         distanceBasePoint = GameObject.Find("DistanceBasePoint");
 
-        Physics.gravity = new Vector3(0,-30f,0);
-        addedForce = new Vector3((float)clickCounter,0,0);
+        Debug.Log(playerController.myRole);
+        if(playerController.myRole == "Jumper") {
+            mainCamObject = GameObject.Instantiate(mainCam);
+            mainCamObject.transform.parent = jumper.transform;
+            mainCamObject.transform.position = new Vector3(0f, 92f, 195f);
+            mainCamObject.transform.rotation = Quaternion.Euler(new Vector3(30f,0,0));
+        }
 
     }
 
-    void Update() {
-        if (!isCollidedWithDistanceBasePoint) {
-            AccelerateJumper();
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+        if(stream.isWriting) {
+            stream.SendNext(speed);
+            stream.SendNext(distance);
+        } else {
+            speed = (float)stream.ReceiveNext();
+            distance = (float)stream.ReceiveNext();
+        }
+    }
+
+    void Update()
+    {
+        if(playerController.isCountDownFinished) {
+            if(!isChangedConstraints){
+                rbJumper.constraints = RigidbodyConstraints.None;
+                rbJumper.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
+                isChangedConstraints = true;
+            }
+
+            if (!isCollidedWithDistanceBasePoint && multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
+                    AccelerateJumper();
+            }
+
+            if(getDistance() != 0) {
+              if (multiModeGameManager.currentJumper == 1) multiModeGameManager.player1_result = distance;
+              if (multiModeGameManager.currentJumper == 2) multiModeGameManager.player2_result = distance;
+            }
+
+            speed = rbJumper.velocity.magnitude;
+
+        } else {
+            rbJumper.constraints = RigidbodyConstraints.FreezeAll;
         }
     }
 
     void OnCollisionEnter(Collision collision) {
        if(collision.gameObject.name == "MeasureStage" && !isDistanceMeasured) {
             distance = MeasureDistance();
+
             isDistanceMeasured = true;
 
             RotateMainCamWithEulerAngle("x", 30);
@@ -70,11 +128,12 @@ public class JumperController : MonoBehaviour {
     }
 
     public float getSpeed() {
-        return rbJumper.velocity.magnitude;
+        return speed;
     }
 
     void AccelerateJumper() {
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return)) {
+        if (Input.GetMouseButtonDown(0)) {
+            Debug.Log("Accelerated");
             clickCounter++;
             addedForce.z = (float)clickCounter;
         }
@@ -84,10 +143,9 @@ public class JumperController : MonoBehaviour {
     void RotateMainCamWithEulerAngle(string direction, int degree) {
         //Add Y and Z later
         //[FIX ME] cannnot rotate
-        if (direction == "x") {
-            mainCam.transform.eulerAngles = new Vector3(Mathf.LerpAngle(mainCam.transform.eulerAngles.x, degree,Time.deltaTime),0,0);
-            Debug.Log(mainCam.transform.rotation);
-        }
+        /* if (direction == "x") {
+            mainCamObject.transform.eulerAngles = new Vector3(Mathf.LerpAngle(mainCam.transform.eulerAngles.x, degree,Time.deltaTime),0,0);
+        }*/
 
     }
 
