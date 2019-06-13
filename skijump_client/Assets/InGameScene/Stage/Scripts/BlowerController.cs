@@ -8,6 +8,8 @@ public class BlowerController : MonoBehaviour
     public GameObject mainCam;
     GameObject mainCamObject;
 
+    bool isRelationDiscarded = false;
+
     public int clickCounter = 0;
     public GameObject blower;
     public JumperController jumperController;
@@ -51,6 +53,11 @@ public class BlowerController : MonoBehaviour
             if(Input.GetMouseButtonDown(0)) {
                 photonView.RPC("DeccelerateJumper", PhotonTargets.All, null);
             }
+        }
+
+        if(jumperController.isDistanceMeasured && !isRelationDiscarded) {
+            this.transform.parent = null;
+            this.isRelationDiscarded = true;
         }
     }
 
