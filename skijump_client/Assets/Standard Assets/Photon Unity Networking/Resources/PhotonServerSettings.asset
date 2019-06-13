@@ -43,4 +43,7 @@ MonoBehaviour:
   - RequestForPickupItems
   - RequestForPickupTimes
   - TaggedPlayer
+  - AccelerateJumper
+  - AutoDeccelerateJumperByJump
+  - DeccelerateJumper
   DisableAutoOpenWizard: 1

@@ -166,6 +166,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myJumpOrder: 0
   currentJumper: 0
+  jumpers: 0
+  gameAborted: 0
   player1_result: 0
   player2_result: 0
 --- !u!114 &283664412

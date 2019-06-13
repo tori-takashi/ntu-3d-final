@@ -29,10 +29,14 @@ public class PlayerController : MonoBehaviour {
             
             if(multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
                 myRole = "Jumper";
-                PhotonNetwork.Instantiate("Jumper", new Vector3(0f, 82.5f, 200f), Quaternion.identity, 0);
+                if(multiModeGameManager.currentJumper == 1) {
+                    PhotonNetwork.Instantiate("Jumper_1", new Vector3(0f, 85f, 200f), Quaternion.identity, 0);
+                } else {
+                    PhotonNetwork.Instantiate("Jumper_2", new Vector3(0f, 85f, 200f), Quaternion.identity, 0);
+                }
             } else {
                 myRole = "Blower";
-                PhotonNetwork.Instantiate("Blower", new Vector3(0f,82.5f,200f), Quaternion.identity, 0);
+                PhotonNetwork.Instantiate("Blower", new Vector3(0f,87.5f,210f), Quaternion.identity, 0);
             }
         } else {
             InitializeSingleMode();
@@ -52,7 +56,14 @@ public class PlayerController : MonoBehaviour {
             isInstantiatedTwoPlayers = true;
 
             blower = GameObject.FindGameObjectWithTag("Blower"); 
+            BlowerController blowerController;
+            blowerController = blower.GetComponent<BlowerController>();
+
             jumper = GameObject.FindGameObjectWithTag("Jumper"); 
+            JumperController jumperController;
+            jumperController = jumper.GetComponent<JumperController>();
+
+            blowerController.jumperController = jumperController;
 
             blower.transform.parent = jumper.transform;
             GameObject.Instantiate(UIManager);
