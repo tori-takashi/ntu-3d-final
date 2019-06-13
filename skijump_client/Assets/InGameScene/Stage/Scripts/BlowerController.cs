@@ -42,7 +42,7 @@ public class BlowerController : MonoBehaviour
         if (playerController.myRole == "Blower") {
             mainCamObject = GameObject.Instantiate(mainCam);
             mainCamObject.transform.parent = blower.transform;
-            mainCamObject.transform.position = new Vector3(0f, 99.5f, 220f);
+            mainCamObject.transform.position = new Vector3(0f, 94f, 224f);
             mainCamObject.transform.rotation = Quaternion.Euler(new Vector3(30f,180f,0));
         }
 

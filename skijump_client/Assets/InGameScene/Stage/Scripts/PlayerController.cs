@@ -31,23 +31,16 @@ public class PlayerController : MonoBehaviour {
             if(multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
                 myRole = "Jumper";
                 if(multiModeGameManager.currentJumper == 1) {
-                    PhotonNetwork.Instantiate("Jumper_1", new Vector3(0f, 85f, 200f), Quaternion.identity, 0);
+                    PhotonNetwork.Instantiate("Jumper_1", new Vector3(0f, 79.5f, 204f), Quaternion.identity, 0);
                 } else {
-                    PhotonNetwork.Instantiate("Jumper_2", new Vector3(0f, 85f, 200f), Quaternion.identity, 0);
+                    PhotonNetwork.Instantiate("Jumper_2", new Vector3(0f, 79.5f, 204f), Quaternion.identity, 0);
                 }
             } else {
                 myRole = "Blower";
-                PhotonNetwork.Instantiate("Blower", new Vector3(0f,87.5f,210f), Quaternion.identity, 0);
+                PhotonNetwork.Instantiate("Blower", new Vector3(0f,82f,214f), Quaternion.identity, 0);
             }
-        } else {
-            InitializeSingleMode();
         }
 
-    }
-
-    void InitializeSingleMode() {
-        //Instantiate(jumper);
-        //Instantiate(mainCam);
     }
 
 

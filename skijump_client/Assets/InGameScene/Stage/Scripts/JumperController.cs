@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class JumperController : MonoBehaviour, IPunObservable
 {
@@ -11,6 +12,7 @@ public class JumperController : MonoBehaviour, IPunObservable
     bool isChangedConstraints = false;
     int clickCounter = 0;
     float speed;
+    bool isMultiMode;
 
     GameObject jumper;
 
@@ -33,6 +35,7 @@ public class JumperController : MonoBehaviour, IPunObservable
 
     void Start()
     {
+        isMultiMode = detectMultiMode();
         clickCounter = 0;
 
         jumper = GameObject.FindGameObjectWithTag("Jumper");
@@ -40,22 +43,23 @@ public class JumperController : MonoBehaviour, IPunObservable
         rbJumper = GetComponent<Rigidbody>();
         addedForce = new Vector3((float)clickCounter,0,0);
 
-        multiModeGameManagerObject = GameObject.Find("MultiModeGameManager");
-        multiModeGameManager = multiModeGameManagerObject.GetComponent<MultiModeGameManager>();
-
-        playerControllerObject = GameObject.Find("PlayerController");
-        playerController = playerControllerObject.GetComponent<PlayerController>();
-
-        photonView = this.GetComponent<PhotonView>();
-
         distanceBasePoint = GameObject.Find("DistanceBasePoint");
 
-        Debug.Log(playerController.myRole);
-        if(playerController.myRole == "Jumper") {
-            mainCamObject = GameObject.Instantiate(mainCam);
-            mainCamObject.transform.parent = jumper.transform;
-            mainCamObject.transform.position = new Vector3(0f, 92f, 195f);
-            mainCamObject.transform.rotation = Quaternion.Euler(new Vector3(30f,0,0));
+        if(isMultiMode == true) {
+            multiModeGameManagerObject = GameObject.Find("MultiModeGameManager");
+            multiModeGameManager = multiModeGameManagerObject.GetComponent<MultiModeGameManager>();
+
+            playerControllerObject = GameObject.Find("PlayerController");
+            playerController = playerControllerObject.GetComponent<PlayerController>();
+
+            photonView = this.GetComponent<PhotonView>();
+
+            if(playerController.myRole == "Jumper") {
+                mainCamObject = GameObject.Instantiate(mainCam);
+                mainCamObject.transform.parent = jumper.transform;
+                mainCamObject.transform.position = new Vector3(0f, 86.5f, 199f);
+                mainCamObject.transform.rotation = Quaternion.Euler(new Vector3(30f,0,0));
+            }
         }
 
     }
@@ -72,27 +76,44 @@ public class JumperController : MonoBehaviour, IPunObservable
 
     void Update()
     {
-        if(playerController.isCountDownFinished) {
-            if(!isChangedConstraints){
-                rbJumper.constraints = RigidbodyConstraints.None;
-                rbJumper.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
-                isChangedConstraints = true;
+        if(isMultiMode) {
+            if(playerController.isCountDownFinished) {
+                if(!isChangedConstraints){
+                    rbJumper.constraints = RigidbodyConstraints.None;
+                    rbJumper.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
+                    isChangedConstraints = true;
+                }
+
+                if (!isCollidedWithDistanceBasePoint && multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
+                        AccelerateJumper();
+                }
+
+                if(getDistance() != 0) {
+                  if (multiModeGameManager.currentJumper == 1) multiModeGameManager.player1_result = distance;
+                  if (multiModeGameManager.currentJumper == 2) multiModeGameManager.player2_result = distance;
+                }
+
+                speed = rbJumper.velocity.magnitude;
+
+            } else {
+                rbJumper.constraints = RigidbodyConstraints.FreezeAll;
             }
+        } else {
 
             if (!isCollidedWithDistanceBasePoint && multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
-                    AccelerateJumper();
+                AccelerateJumper();
             }
 
             if(getDistance() != 0) {
-              if (multiModeGameManager.currentJumper == 1) multiModeGameManager.player1_result = distance;
-              if (multiModeGameManager.currentJumper == 2) multiModeGameManager.player2_result = distance;
+                speed = rbJumper.velocity.magnitude;
             }
 
-            speed = rbJumper.velocity.magnitude;
-
-        } else {
-            rbJumper.constraints = RigidbodyConstraints.FreezeAll;
         }
+    }
+
+    bool detectMultiMode() {
+        if(SceneManager.GetActiveScene().name == "MultiMode") return true;
+        return false;
     }
 
     void OnCollisionEnter(Collision collision) {

@@ -118,6 +118,7 @@ public class UIManager : MonoBehaviour
         if (seconds == 0) {
             countDownLabelComponent.text = "GO!!!";
             playerController.isCountDownFinished = true;
+            if(playerController.myRole == "Jumper") speedLabel.SetActive(true);
         }
         if (timerCount < 0.3f) countDownLabel.SetActive(false);
     }
@@ -146,16 +147,20 @@ public class UIManager : MonoBehaviour
     }
 
     void JudgeDisplayClickLabel() {
-       if(!jumperController.isCollidedWithDistanceBasePoint && playerController.myRole == "Jumper" && !jumperController.isDistanceMeasured) {
-            clickDirectionLabelComponent.text = "Click Click Click!!!";
-        } else {
-            clickDirectionLabelComponent.text = "";
+        if(playerController.myRole == "Jumper"){
+            if(!jumperController.isCollidedWithDistanceBasePoint && !jumperController.isDistanceMeasured) {
+                clickDirectionLabelComponent.text = "Click Click Click!!!";
+            } else {
+                clickDirectionLabelComponent.text = "";
+            }
         }
 
-        if(jumperController.isCollidedWithDistanceBasePoint && playerController.myRole == "Blower" && !jumperController.isDistanceMeasured) {
-            clickDirectionLabelComponent.text = "Click Click Click!!!";
-        } else {
-            clickDirectionLabelComponent.text = "";
+        if(playerController.myRole == "Blower") {
+            if(jumperController.isCollidedWithDistanceBasePoint && !jumperController.isDistanceMeasured) {
+                clickDirectionLabelComponent.text = "Click Click Click!!!";
+            } else {
+                clickDirectionLabelComponent.text = "";
+            }
         }
     }
 
