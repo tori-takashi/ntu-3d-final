@@ -97,16 +97,32 @@ public class UIManager : MonoBehaviour
         JudgeDisplayClickLabel();
         JudgeDisplaySpeedLabel();
 
-        if (jumperController.getDistance() != 0 && !multiModeGameManager.gameAborted) {
-            distanceLabel.SetActive(true);
-            distanceLabelComponent.text = jumperController.getDistance().ToString() + "m";
+        if(jumperController.getDistance() != 0) AfterResultDetermined();
+    }
+
+    void AfterResultDetermined() {
+        if(isMultiMode) {
+            // for multi mode
+            if (jumperController.getDistance() != 0 && !multiModeGameManager.gameAborted) {
+                distanceLabel.SetActive(true);
+                distanceLabelComponent.text = jumperController.getDistance().ToString() + "m";
         
-            if(multiModeGameManager.isDeterminedWinOrLose()) {
-                JudgeAndShowWinOrLose();
+                if(multiModeGameManager.isDeterminedWinOrLose()) {
+                    JudgeAndShowWinOrLose();
+                    restartGameButton.gameObject.SetActive(true);
+                    goToMainMenuButton.gameObject.SetActive(true);
+                } else {
+                    Invoke("PlayerChange", 3f);
+                }
+            }
+        } else {
+            //for single mode
+            if (jumperController.getDistance() != 0) {
+                distanceLabel.SetActive(true);
+                distanceLabelComponent.text = jumperController.getDistance().ToString() + "m";
+
                 restartGameButton.gameObject.SetActive(true);
                 goToMainMenuButton.gameObject.SetActive(true);
-            } else {
-                Invoke("PlayerChange", 3f);
             }
         }
     }
@@ -124,7 +140,7 @@ public class UIManager : MonoBehaviour
     }
 
     void JudgeGameAborted(){
-        if(multiModeGameManager.gameAborted) {
+        if(isMultiMode && multiModeGameManager.gameAborted) {
             matchResultLabelComponent.text = "YOU WIN!";
             restartGameButton.gameObject.SetActive(true);
             goToMainMenuButton.gameObject.SetActive(true);
@@ -132,15 +148,24 @@ public class UIManager : MonoBehaviour
     }
 
     void JudgeDisplaySpeedLabel(){
-        if (!jumperController.isCollidedWithDistanceBasePoint) {
-            speedLabelComponent.text = Mathf.Round(jumperController.getSpeed()).ToString() + "km/h";
-        } else {
-            speedLabel.SetActive(false);
-        }
-
-        if(jumperController.isCollidedWithDistanceBasePoint && playerController.myRole == "Blower" && !jumperController.isDistanceMeasured) {
+        if(playerController.isCountDownFinished && !jumperController.isDistanceMeasured) {
             speedLabel.SetActive(true);
-            speedLabelComponent.text = Mathf.Round(jumperController.getSpeed()).ToString() + "km/h";
+
+            if(playerController.myRole == "Jumper"){
+                if(!jumperController.isCollidedWithDistanceBasePoint) {
+                    speedLabelComponent.text
+                  = Mathf.Round(jumperController.getSpeed()).ToString() + "km/h";
+                } else {
+                    speedLabel.SetActive(false);
+                }
+            } else {
+                if(jumperController.isCollidedWithDistanceBasePoint) {
+                  speedLabelComponent.text
+                  = Mathf.Round(jumperController.getSpeed()).ToString() + "km/h";
+                } else {
+                    speedLabel.SetActive(false);
+                }
+            }
         } else {
             speedLabel.SetActive(false);
         }
@@ -165,7 +190,7 @@ public class UIManager : MonoBehaviour
     }
 
     void JudgeAndShowWinOrLose() {
-        if(multiModeGameManager.player1_result == multiModeGameManager.player2_result) {
+        if(isMultiMode && multiModeGameManager.player1_result == multiModeGameManager.player2_result) {
             matchResultLabelComponent.text = "DRAW";
         } else {
 

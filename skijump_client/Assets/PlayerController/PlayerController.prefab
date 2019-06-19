@@ -51,3 +51,5 @@ MonoBehaviour:
     type: 3}
   jumper: {fileID: 0}
   blower: {fileID: 0}
+  jumperForSingleMode: {fileID: 2005677148172881923, guid: 90ae6d9e11d7f6941895060687c7cd4b,
+    type: 3}

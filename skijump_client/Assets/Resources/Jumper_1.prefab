@@ -2014,7 +2014,10 @@ MonoBehaviour:
   isCollidedWithDistanceBasePoint: 0
   distance: 0
   isDistanceMeasured: 0
+  UIManagerForSingleMode: {fileID: 3312308671697656829, guid: 929d2d64959778d459014e8f981737d4,
+    type: 3}
   mainCam: {fileID: 5417784423527823591, guid: 3b3b3f1a609c39847bd78ea3c4e87f24, type: 3}
+  rbJumper: {fileID: 0}
 --- !u!65 &5084601685104161086
 BoxCollider:
   m_ObjectHideFlags: 0

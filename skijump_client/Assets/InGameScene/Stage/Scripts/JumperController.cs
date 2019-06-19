@@ -16,6 +16,7 @@ public class JumperController : MonoBehaviour, IPunObservable
 
     GameObject jumper;
 
+    public GameObject UIManagerForSingleMode;
     public GameObject mainCam;
     GameObject mainCamObject;
 
@@ -35,7 +36,11 @@ public class JumperController : MonoBehaviour, IPunObservable
 
     void Start()
     {
-        isMultiMode = detectMultiMode();
+        playerControllerObject = GameObject.Find("PlayerController");
+        playerController = playerControllerObject.GetComponent<PlayerController>();
+        Debug.Log(playerController);
+        
+        isMultiMode = playerController.isMultiMode;
         clickCounter = 0;
 
         jumper = GameObject.FindGameObjectWithTag("Jumper");
@@ -45,21 +50,22 @@ public class JumperController : MonoBehaviour, IPunObservable
 
         distanceBasePoint = GameObject.Find("DistanceBasePoint");
 
-        if(isMultiMode == true) {
+        if(playerController.myRole == "Jumper") {
+            mainCamObject = GameObject.Instantiate(mainCam);
+            mainCamObject.transform.parent = jumper.transform;
+            mainCamObject.transform.position = new Vector3(0f, 86.5f, 199f);
+            mainCamObject.transform.rotation = Quaternion.Euler(new Vector3(30f,0,0));
+        }
+
+        if(isMultiMode) {
+            // for multi mode
             multiModeGameManagerObject = GameObject.Find("MultiModeGameManager");
             multiModeGameManager = multiModeGameManagerObject.GetComponent<MultiModeGameManager>();
 
-            playerControllerObject = GameObject.Find("PlayerController");
-            playerController = playerControllerObject.GetComponent<PlayerController>();
-
             photonView = this.GetComponent<PhotonView>();
-
-            if(playerController.myRole == "Jumper") {
-                mainCamObject = GameObject.Instantiate(mainCam);
-                mainCamObject.transform.parent = jumper.transform;
-                mainCamObject.transform.position = new Vector3(0f, 86.5f, 199f);
-                mainCamObject.transform.rotation = Quaternion.Euler(new Vector3(30f,0,0));
-            }
+        } else {
+            // for single mode
+            GameObject.Instantiate(UIManagerForSingleMode);
         }
 
     }
@@ -74,46 +80,52 @@ public class JumperController : MonoBehaviour, IPunObservable
         }
     }
 
-    void Update()
-    {
-        if(isMultiMode) {
-            if(playerController.isCountDownFinished) {
-                if(!isChangedConstraints){
-                    rbJumper.constraints = RigidbodyConstraints.None;
-                    rbJumper.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
-                    isChangedConstraints = true;
-                }
+    void Update() {
+        if(playerController.isCountDownFinished) {
+            ClearCountDownConstraints();
+            speed = rbJumper.velocity.magnitude;
 
-                if (!isCollidedWithDistanceBasePoint && multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
-                        AccelerateJumper();
-                }
-
-                if(getDistance() != 0) {
-                  if (multiModeGameManager.currentJumper == 1) multiModeGameManager.player1_result = distance;
-                  if (multiModeGameManager.currentJumper == 2) multiModeGameManager.player2_result = distance;
-                }
-
-                speed = rbJumper.velocity.magnitude;
-
-            } else {
-                rbJumper.constraints = RigidbodyConstraints.FreezeAll;
-            }
+            if (isJumperSliding() ) AccelerateJumper();
+            if (getDistance() != 0) SetResultOnlyMultiMode();
+            
         } else {
-
-            if (!isCollidedWithDistanceBasePoint && multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
-                AccelerateJumper();
-            }
-
-            if(getDistance() != 0) {
-                speed = rbJumper.velocity.magnitude;
-            }
-
+            CountDownConstraints();
         }
     }
 
-    bool detectMultiMode() {
-        if(SceneManager.GetActiveScene().name == "MultiMode") return true;
-        return false;
+    void SetResultOnlyMultiMode() {
+        if(isMultiMode){
+            if (multiModeGameManager.currentJumper == 1) multiModeGameManager.player1_result = distance;
+            if (multiModeGameManager.currentJumper == 2) multiModeGameManager.player2_result = distance;
+        }
+    }
+
+    void ClearCountDownConstraints(){
+      if(!isChangedConstraints){
+        rbJumper.constraints = RigidbodyConstraints.None;
+        rbJumper.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
+        isChangedConstraints = true;
+      }
+    }
+
+    void CountDownConstraints() {
+      rbJumper.constraints = RigidbodyConstraints.FreezeAll;
+    }
+
+    bool isJumperSliding() {
+        if (isMultiMode) {
+            return isJumperSlidingOnMultiMode();
+        } else {
+            return isJumperSlidingOnSingleMode();
+        }
+    }
+
+    bool isJumperSlidingOnMultiMode (){
+      return !isCollidedWithDistanceBasePoint && multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder;
+    }
+
+    bool isJumperSlidingOnSingleMode() {
+      return !isCollidedWithDistanceBasePoint;
     }
 
     void OnCollisionEnter(Collision collision) {

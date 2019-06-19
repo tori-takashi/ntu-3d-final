@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MultiModeGameManager : MonoBehaviour
+public class MultiModeGameManager : MonoBehaviour, IPunObservable
 {
     public int myJumpOrder;
     public int currentJumper;
@@ -33,6 +33,14 @@ public class MultiModeGameManager : MonoBehaviour
 
     public void OnPhotonPlayerDisconnected() {
         gameAborted = true;
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
+        if(stream.isWriting) {
+            stream.SendNext(currentJumper);
+        } else {
+            currentJumper = (int)stream.ReceiveNext();
+        }
     }
 
 

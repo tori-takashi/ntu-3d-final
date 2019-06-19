@@ -49,15 +49,19 @@ public class BlowerController : MonoBehaviour
     }
 
     void Update(){
-        if (jumperController.isCollidedWithDistanceBasePoint && playerController.myRole == "Blower" && !jumperController.isDistanceMeasured) {
-            if(Input.GetMouseButtonDown(0)) {
-                photonView.RPC("DeccelerateJumper", PhotonTargets.All, null);
-            }
-        }
 
-        if(jumperController.isDistanceMeasured && !isRelationDiscarded) {
-            this.transform.parent = null;
-            this.isRelationDiscarded = true;
+        if(playerController.isInstantiatedTwoPlayers) {
+            if (jumperController.isCollidedWithDistanceBasePoint && playerController.myRole == "Blower" && !jumperController.isDistanceMeasured) {
+                if(Input.GetMouseButtonDown(0)) {
+                    photonView.RPC("DeccelerateJumper", PhotonTargets.All, null);
+                }
+            }
+        
+
+            if(jumperController.isDistanceMeasured && !isRelationDiscarded) {
+                this.transform.parent = null;
+                this.isRelationDiscarded = true;
+            }
         }
     }
 

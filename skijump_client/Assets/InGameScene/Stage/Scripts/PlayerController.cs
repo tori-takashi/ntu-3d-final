@@ -19,35 +19,44 @@ public class PlayerController : MonoBehaviour {
     public GameObject jumper;
     public GameObject blower;
 
+    public GameObject jumperForSingleMode;
+
     void Start() {
         Physics.gravity = new Vector3(0,-30f,0);
 
         if (SceneManager.GetActiveScene().name == "MultiMode"){
+            //for multi mode
             isMultiMode = true;
 
             multiModeGameManagerObject = GameObject.Find("MultiModeGameManager");
             multiModeGameManager = multiModeGameManagerObject.GetComponent<MultiModeGameManager>();
-            
+
             if(multiModeGameManager.currentJumper == multiModeGameManager.myJumpOrder) {
                 myRole = "Jumper";
-                if(multiModeGameManager.currentJumper == 1) {
+                 if(multiModeGameManager.currentJumper == 1) {
                     PhotonNetwork.Instantiate("Jumper_1", new Vector3(0f, 79.5f, 204f), Quaternion.identity, 0);
                 } else {
                     PhotonNetwork.Instantiate("Jumper_2", new Vector3(0f, 79.5f, 204f), Quaternion.identity, 0);
                 }
+                
             } else {
                 myRole = "Blower";
                 PhotonNetwork.Instantiate("Blower", new Vector3(0f,82f,214f), Quaternion.identity, 0);
             }
+        } else if (SceneManager.GetActiveScene().name == "SingleMode") {
+            // for single mode
+              isMultiMode = false;
+              myRole = "Jumper";
+              GameObject.Instantiate(jumperForSingleMode, new Vector3(0f, 79.5f, 204f), Quaternion.identity);
+        } else {
+              isMultiMode = true;
         }
 
     }
 
-
     void Update() {
         if(isMultiMode && !isInstantiatedTwoPlayers){
           if (isTwoPlayerExisted) {
-            isInstantiatedTwoPlayers = true;
 
             blower = GameObject.FindGameObjectWithTag("Blower"); 
             BlowerController blowerController;
@@ -61,6 +70,8 @@ public class PlayerController : MonoBehaviour {
 
             blower.transform.parent = jumper.transform;
             GameObject.Instantiate(UIManager);
+
+            isInstantiatedTwoPlayers = true;
 
           } else {
             if( GameObject.FindGameObjectWithTag("Jumper") && GameObject.FindGameObjectWithTag("Blower")) isTwoPlayerExisted = true;

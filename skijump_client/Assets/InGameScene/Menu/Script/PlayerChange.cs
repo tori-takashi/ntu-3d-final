@@ -14,12 +14,11 @@ public class PlayerChange : MonoBehaviour
     GameObject goToMainMenuButton;
     Button goToMainMenuButtonComponent;
 
-    void Start()
-    {
+    void Awake() {
         multiModeGameManagerObject = GameObject.Find("MultiModeGameManager");
         multiModeGameManager = multiModeGameManagerObject.GetComponent<MultiModeGameManager>();
 
-/*      restartGameButton = GameObject.Find("RestartGameButton");
+        restartGameButton = GameObject.Find("RestartGameButton");
         restartGameButtonComponent  = restartGameButton.GetComponent<Button>();
         goToMainMenuButton = GameObject.Find("GoToMainMenuButton");
         goToMainMenuButtonComponent  = goToMainMenuButton.GetComponent<Button>();
@@ -29,22 +28,22 @@ public class PlayerChange : MonoBehaviour
 
         restartGameButton.gameObject.SetActive(false);
         goToMainMenuButton.gameObject.SetActive(false);
-*/
-        if(multiModeGameManager.currentJumper == 1) multiModeGameManager.currentJumper++;
-        
+    }
 
+    void Start()
+    {
         Invoke("ChangeScene", 3f);
     }
 
     void Update()
-    {
-        /*
+    {   multiModeGameManager.currentJumper = 2;
         if(multiModeGameManager.gameAborted) {
             restartGameButton.gameObject.SetActive(true);
             goToMainMenuButton.gameObject.SetActive(true);
+        } else {
+            restartGameButton.gameObject.SetActive(false);
+            goToMainMenuButton.gameObject.SetActive(false);
         }
-        */
-        
     }
 
     void GoToMainMenu() {
